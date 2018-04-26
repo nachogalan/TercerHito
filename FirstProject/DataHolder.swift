@@ -15,6 +15,7 @@ class DataHolder: NSObject {
 
     static let sharedInstance:DataHolder = DataHolder()
     
+    var DHtxtUser:ViewController?
     var fireStoreDB:Firestore?
     var miPerfil:Perfil = Perfil()
     var firStorage:Storage?
@@ -55,12 +56,35 @@ class DataHolder: NSObject {
         }
       
     }
-
+    
+    func confirmarLogin(user:String, password:String, delegate:DataHolderDelegate){
+        Auth.auth().signIn(withEmail: user, password: password) { (user, error) in
+            if user != nil{
+                let ruta =
+                    DataHolder.sharedInstance.fireStoreDB?.collection("Perfiles").document((user?.uid)!);
+                ruta?.getDocument { (document, error) in
+                    if document != nil {
+                        DataHolder.sharedInstance.miPerfil.setMap(valores: (document?.data())!)
+                        delegate.DHDConfirmacionLogin!(blFin: true)
+                        
+                    } else {
+                        print(error!)
+                    }
+                }
+                //self.performSegue(withIdentifier: "transitionLogin", sender: self)
+            }
+            else{
+                print("NO SE HA LOGEADO!")
+                print(error!)
+            }
+        
+    }
+    
 }
 
-
+}
 @objc protocol DataHolderDelegate{
     @objc optional func DHDDescargaPerfilesCompleta(blFin:Bool)
+    @objc optional func DHDConfirmacionLogin(blFin:Bool)
 }
-
 
