@@ -10,7 +10,7 @@ import UIKit
 import FirebaseAuth
 
 class ViewController: UIViewController, DataHolderDelegate {
-
+    
     
     @IBOutlet var txtUser:UITextField?
     @IBOutlet var txtPassword:UITextField?
@@ -19,20 +19,20 @@ class ViewController: UIViewController, DataHolderDelegate {
     override func viewDidLoad() {
         super.viewDidLoad();
         
-       
-        /*
-        do{
-            try Auth.auth().signOut()
-        } catch{
         
-        }
- */
-      
-//        Auth.auth().addStateDidChangeListener { (auth, user) in
-//           if user != nil{
-//                self.performSegue(withIdentifier: "transitionLogin", sender: self)
-//            }
-//        }
+        /*
+         do{
+         try Auth.auth().signOut()
+         } catch{
+         
+         }
+         */
+        
+        //        Auth.auth().addStateDidChangeListener { (auth, user) in
+        //           if user != nil{
+        //                self.performSegue(withIdentifier: "transitionLogin", sender: self)
+        //            }
+        //        }
         txtUser?.text = DataHolder.sharedInstance.sNickname
         DataHolder.sharedInstance.sNickname = "123456"
         txtPassword?.text = DataHolder.sharedInstance.sNickname
@@ -46,9 +46,7 @@ class ViewController: UIViewController, DataHolderDelegate {
         }
     }
     
-   
     
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -56,12 +54,11 @@ class ViewController: UIViewController, DataHolderDelegate {
     
     @IBAction func clickLoginEvent(){
         print("Hola " + (txtUser?.text)!)
-         DataHolder.sharedInstance.confirmarLogin(user: (txtUser?.text)!, password: (txtPassword?.text)!, delegate: self)
-
+        DataHolder.sharedInstance.confirmarLogin(user: (txtUser?.text)!, password: (txtPassword?.text)!, delegate: self)
+        
         
     }
     
     
     
 }
-

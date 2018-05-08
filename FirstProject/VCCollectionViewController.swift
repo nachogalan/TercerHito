@@ -41,7 +41,9 @@ class VCCollectionViewController: UIViewController, UICollectionViewDelegate, UI
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let celda = collectionView.dequeueReusableCell(withReuseIdentifier: "IDmiCelda1", for: indexPath) as! MiCelda2
         celda.lblNombre?.text = DataHolder.sharedInstance.arUsuarios[indexPath.row].sNombre
-        celda.mostrarImagen(uri:  DataHolder.sharedInstance.arUsuarios[indexPath.row].sImage!)
+        if((DataHolder.sharedInstance.arUsuarios[indexPath.row].sImage) != nil){
+            celda.mostrarImagen(uri:  DataHolder.sharedInstance.arUsuarios[indexPath.row].sImage!)
+        }
         
         return celda
     }

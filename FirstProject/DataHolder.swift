@@ -12,7 +12,7 @@ import FirebaseStorage
 
 
 class DataHolder: NSObject {
-
+    
     static let sharedInstance:DataHolder = DataHolder()
     
     var DHtxtUser:ViewController?
@@ -21,6 +21,7 @@ class DataHolder: NSObject {
     var firStorage:Storage?
     var arUsuarios:[Perfil] = []
     var sNickname:String = "QWERTY@gmail.com"
+    var imagenDescarga:[String:UIImage]? = [:]
     
     func initFireBase(){
         FirebaseApp.configure()
@@ -29,8 +30,27 @@ class DataHolder: NSObject {
         
     }
     
+    func getImagen(clave: String, delegate: DataHolderDelegate){
+        if self.imagenDescarga![clave]==nil{
+            let gsReference = self.firStorage?.reference(forURL: clave)
+            // Download in memory with a maximum allowed size of 1MB (1 * 1024 * 1024 bytes)
+            gsReference?.getData(maxSize: 1 * 1024 * 1024) { data, error in
+                if error != nil {
+                    // Uh-oh, an error occurred!
+                } else {
+                    let imgDescargada = UIImage(data: data!)
+                    // Data for "images/island.jpg" is returned
+                    //let image = UIImage(data: data!)
+                    self.imagenDescarga?[clave] = imgDescargada
+                    delegate.DHDDescargarImganes!(imagen: imgDescargada!)
+                }   }        }
+        else {
+            delegate.DHDDescargarImganes!(imagen: self.imagenDescarga![clave]!)
+            
+        }
+    }
     func descargarPerfiles(delegate:DataHolderDelegate){
-       
+        
         fireStoreDB?.collection("Perfiles").addSnapshotListener { (querySnapshot, err) in
             if let err = err {
                 print("Error getting documents: \(err)")
@@ -54,8 +74,23 @@ class DataHolder: NSObject {
                 
             }
         }
-      
+        
     }
+    
+    func crearUsuario (user:String, password:String, delegate:DataHolderDelegate){
+        Auth.auth().createUser(withEmail: user, password: password) { (user, error) in
+            if user != nil{
+                print("Registrado")
+                DataHolder.sharedInstance.fireStoreDB?.collection("Perfiles").document((user?.uid)!).setData(DataHolder.sharedInstance.miPerfil.getMap())
+                delegate.DHDCrearUsuarioRegistro!(blFin: true)
+                
+            }else{
+                print(error!)
+            }
+            print("Hola")
+        }
+    }
+    
     
     func confirmarLogin(user:String, password:String, delegate:DataHolderDelegate){
         Auth.auth().signIn(withEmail: user, password: password) { (user, error) in
@@ -77,14 +112,16 @@ class DataHolder: NSObject {
                 print("NO SE HA LOGEADO!")
                 print(error!)
             }
+            
+        }
+        
         
     }
-    
 }
 
-}
 @objc protocol DataHolderDelegate{
     @objc optional func DHDDescargaPerfilesCompleta(blFin:Bool)
     @objc optional func DHDConfirmacionLogin(blFin:Bool)
+    @objc optional func DHDCrearUsuarioRegistro(blFin:Bool)
+    @objc optional func DHDDescargarImganes(imagen:UIImage)
 }
-

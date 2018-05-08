@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MiCelda2: UICollectionViewCell {
+class MiCelda2: UICollectionViewCell, DataHolderDelegate {
     @IBOutlet var imgMain:UIImageView?
     @IBOutlet var lblNombre:UILabel?
     var imagenDescargada:UIImage?
@@ -18,25 +18,13 @@ class MiCelda2: UICollectionViewCell {
         // Initialization code
     }
     func mostrarImagen(uri:String){
-        self.imgMain?.image = nil
-        // if(imagenDescargada==nil){
-        let gsReference = DataHolder.sharedInstance.firStorage?.reference(forURL: uri)
-        // Download in memory with a maximum allowed size of 1MB (1 * 1024 * 1024 bytes)
-        gsReference?.getData(maxSize: 1 * 1024 * 1024) { data, error in
-            if error != nil {
-                // Uh-oh, an error occurred!
-            } else {
-                // Data for "images/island.jpg" is returned
-                //let image = UIImage(data: data!)
-                self.imagenDescargada = UIImage(data: data!)
-                self.imgMain?.image = self.imagenDescargada
-            }
-        }
-        //  }
-    
-    
-}
-
+    self.imgMain?.image = nil
+    // if(imagenDescargada==nil){
+    DataHolder.sharedInstance.getImagen(clave: uri, delegate: self)
+    }
+    func DHDDescargarImganes(imagen: UIImage) {
+        self.imgMain?.image = imagen
+    }
 
 //
 }

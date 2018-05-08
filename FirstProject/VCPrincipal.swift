@@ -42,7 +42,10 @@ class VCPrincipal: UIViewController, UITableViewDelegate, UITableViewDataSource,
         let celda = tableView.dequeueReusableCell(withIdentifier: "IDmiCelda") as! MiCelda1
         celda.lblTabla?.text =  DataHolder.sharedInstance.arUsuarios[indexPath.row].sNombre
         celda.lblEmail?.text =  DataHolder.sharedInstance.arUsuarios[indexPath.row].sApellido
-        celda.mostrarImagen(uri:  DataHolder.sharedInstance.arUsuarios[indexPath.row].sImage!)
+        if((DataHolder.sharedInstance.arUsuarios[indexPath.row].sImage) != nil){
+            celda.mostrarImagen(uri:  DataHolder.sharedInstance.arUsuarios[indexPath.row].sImage!)
+        }
+        
         return celda
     }
     
